@@ -68,11 +68,11 @@ function ph_db(): PDO
         return $pdo;
     }
 
-    $host = ph_config('DB_HOST', '127.0.0.1');
+    $host = ph_config('DB_HOST', 'localhost');
     $port = ph_config('DB_PORT', '3306');
     $name = ph_config('DB_NAME', 'pursuit_hunter');
     $user = ph_config('DB_USER', 'root');
-    $pass = ph_config('DB_PASSWORD', '');
+    $pass = ph_config('DB_PASSWORD', 'titou170812+');
 
     $serverDsn = sprintf('mysql:host=%s;port=%s;charset=utf8mb4', $host, $port);
     $server = ph_pdo($serverDsn, $user, $pass);
