@@ -68,7 +68,7 @@ function ph_db(): PDO
         return $pdo;
     }
 
-    $host = ph_config('DB_HOST', 'localhost');
+    $host = ph_config('DB_HOST', 'db');
     $port = ph_config('DB_PORT', '3306');
     $name = ph_config('DB_NAME', 'pursuit_hunter');
     $user = ph_config('DB_USER', 'root');
