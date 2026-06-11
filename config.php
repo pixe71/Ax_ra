@@ -72,7 +72,7 @@ function ph_db(): PDO
     $port = ph_config('DB_PORT', '3306');
     $name = ph_config('DB_NAME', 'pursuit_hunter');
     $user = ph_config('DB_USER', 'root');
-    $pass = ph_config('DB_PASSWORD', 'titou170812+');
+    $pass = ph_config('DB_PASSWORD', '');
 
     $serverDsn = sprintf('mysql:host=%s;port=%s;charset=utf8mb4', $host, $port);
     $server = ph_pdo($serverDsn, $user, $pass);
