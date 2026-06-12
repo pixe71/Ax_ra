@@ -1,0 +1,80 @@
+CREATE DATABASE IF NOT EXISTS pursuit_hunter
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE pursuit_hunter;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  username VARCHAR(30) NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  best_score INT UNSIGNED NOT NULL DEFAULT 0,
+  xp INT UNSIGNED NOT NULL DEFAULT 0,
+  level INT UNSIGNED NOT NULL DEFAULT 1,
+  coins INT UNSIGNED NOT NULL DEFAULT 0,
+  title VARCHAR(40) NULL DEFAULT NULL,
+  games_played INT UNSIGNED NOT NULL DEFAULT 0,
+  playtime_seconds INT UNSIGNED NOT NULL DEFAULT 0,
+  total_kills INT UNSIGNED NOT NULL DEFAULT 0,
+  total_headshots INT UNSIGNED NOT NULL DEFAULT 0,
+  total_boss_kills INT UNSIGNED NOT NULL DEFAULT 0,
+  current_streak INT UNSIGNED NOT NULL DEFAULT 0,
+  best_streak INT UNSIGNED NOT NULL DEFAULT 0,
+  last_login_date DATE NULL DEFAULT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  UNIQUE KEY uq_users_username (username),
+  KEY idx_users_best_score (best_score)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS scores (
+  id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL,
+  score INT UNSIGNED NOT NULL DEFAULT 0,
+  wave INT UNSIGNED NOT NULL DEFAULT 0,
+  kills INT UNSIGNED NOT NULL DEFAULT 0,
+  headshots INT UNSIGNED NOT NULL DEFAULT 0,
+  accuracy DECIMAL(5,2) NOT NULL DEFAULT 0.00,
+  combo INT UNSIGNED NOT NULL DEFAULT 0,
+  boss_kills INT UNSIGNED NOT NULL DEFAULT 0,
+  challenges_done INT UNSIGNED NOT NULL DEFAULT 0,
+  duration_seconds INT UNSIGNED NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
+  KEY idx_scores_user_id (user_id),
+  KEY idx_scores_score (score),
+  KEY idx_scores_created_at (created_at),
+  CONSTRAINT fk_scores_users
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_achievements (
+  user_id INT UNSIGNED NOT NULL,
+  achievement_key VARCHAR(40) NOT NULL,
+  unlocked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, achievement_key),
+  CONSTRAINT fk_achievements_users
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_quests (
+  user_id INT UNSIGNED NOT NULL,
+  quest_date DATE NOT NULL,
+  quest_key VARCHAR(40) NOT NULL,
+  progress INT UNSIGNED NOT NULL DEFAULT 0,
+  completed_at DATETIME NULL DEFAULT NULL,
+  PRIMARY KEY (user_id, quest_date, quest_key),
+  CONSTRAINT fk_quests_users
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS rate_limits (
+  rl_key VARCHAR(80) NOT NULL,
+  window_start INT UNSIGNED NOT NULL,
+  hits INT UNSIGNED NOT NULL DEFAULT 1,
+  PRIMARY KEY (rl_key)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
